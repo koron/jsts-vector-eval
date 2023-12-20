@@ -29,11 +29,9 @@ func findKNN(words []wordvec.Word, target wordvec.Word, k int, dist func([]float
 		x := sort.Search(len(rank), func(i int) bool {
 			return c.Dist < rank[i].Dist
 		})
-		if x < k-1 {
-			rank = slices.Insert(rank, x, c)
-			if len(rank) > k {
-				rank = rank[0:k]
-			}
+		rank = slices.Insert(rank, x, c)
+		if len(rank) > k {
+			rank = rank[0:k]
 		}
 	}
 	return rank
