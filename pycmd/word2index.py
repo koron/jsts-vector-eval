@@ -38,6 +38,8 @@ def words2index(words, indexFactory):
         ids.append(i)
     vecs = np.array(vecs, dtype=np.float32)
     ids = np.array(ids, dtype=np.int64)
+    if not index.is_trained:
+        index.train(vecs)
     index.add_with_ids(vecs, ids)
     return index
 
@@ -54,14 +56,5 @@ logger.debug(f"loaded {len(words)} words with {len(words[0].vec)} dim vector")
 
 # index vectors with L2 norm
 index = words2index(words, lambda d: faiss.IndexFlatIP(d))
-logger.info(f"indexed {index.ntotal} vectors with ID in {index.ntotal*index.code_size}")
-
-k = 10
-for i in range(len(words)):
-    v = words[i].vec
-    vecs = np.array([v], dtype=np.float32)
-    D, I = index.search(vecs, k+1)
-    #wD = [np.sqrt(d) for d in D[0]] # needed for only IndexFlagL2
-    wD = [-d for d in D[0]] # needed for only IndexFlagIP
-    wI = [words[i].id for i in I[0]]
-    printEntry(sys.stdout, wI[0], wI[1:], wD[1:])
+#index = words2index(words, lambda d: faiss.IndexPQ(d, 16, 4))
+logger.info(f"indexed {index.ntotal} vectors with ID in {index.ntotal * index.index.sa_code_size()}")
