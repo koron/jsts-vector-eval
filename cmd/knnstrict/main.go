@@ -6,59 +6,17 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"math"
 	"os"
 	"slices"
 	"sort"
 
+	"github.com/koron/jsts-vector-eval/internal/distfunc"
 	"github.com/koron/jsts-vector-eval/internal/wordvec"
 )
 
 type Cand struct {
 	ID   string
 	Dist float64
-}
-
-// Euclid is a distance function uses euclid distance
-func Euclid(v1, v2 []float64) float64 {
-	var sum float64 = 0
-	if len(v1) != len(v2) {
-		panic("vector length unmatched")
-	}
-	for i := range v1 {
-		sum += (v1[i] - v2[i]) * (v1[i] - v2[i])
-	}
-	return math.Sqrt(sum)
-}
-
-// InnerProduct is a distance function use negative inner product
-func InnerProduct(v1, v2 []float64) float64 {
-	var sum float64 = 0
-	if len(v1) != len(v2) {
-		panic("vector length unmatched")
-	}
-	for i := range v1 {
-		sum += v1[i] * v2[i]
-	}
-	return -sum
-}
-
-func Cosine(v1, v2 []float64) float64 {
-	if len(v1) != len(v2) {
-		panic("vector length unmatched")
-	}
-	var (
-		sum float64
-		l1  float64
-		l2  float64
-	)
-	for i := range v1 {
-		sum += v1[i] * v2[i]
-		l1 += v1[i] * v1[i]
-		l2 += v2[i] * v2[i]
-
-	}
-	return 1.0 - sum/(math.Sqrt(l1)*math.Sqrt(l2))
 }
 
 func findKNN(words []wordvec.Word, target wordvec.Word, k int, dist func([]float64, []float64) float64) []Cand {
@@ -111,16 +69,7 @@ func main() {
 	flag.IntVar(&k, "k", 10, `k value for top of k-NN`)
 	flag.Parse()
 
-	switch distType {
-	case "euclid":
-		distFunc = Euclid
-	case "inner":
-		distFunc = InnerProduct
-	case "cosine":
-		distFunc = Cosine
-	default:
-		log.Fatalf("unknown distance function: %s", distType)
-	}
+	distFunc = distfunc.ByName(distType)
 
 	words, err := wordvec.ReadAll(os.Stdin)
 	if err != nil {
