@@ -27,8 +27,13 @@ for i in range(len(words)):
     v = words[i].vec
     vecs = np.array([v], dtype=np.float32)
     D, I = index.search(vecs, k+1)
-    wD = [np.sqrt(d) for d in D[0]] # needed for only IndexFlagL2
-    #wD = [-d for d in D[0]] # needed for only IndexFlagIP
-    #wD = [d for d in D[0]]
+
+    if index.metric_type == faiss.METRIC_L2:
+        wD = [np.sqrt(d) for d in D[0]]
+    elif index.metric_type == faiss.METRIC_INNER_PRODUCT:
+        wD = [-d for d in D[0]]
+    else:
+        wD = [d for d in D[0]]
+
     wI = [words[i].id for i in I[0]]
     printEntry(sys.stdout, wI[0], wI[1:], wD[1:])
