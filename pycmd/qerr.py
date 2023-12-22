@@ -16,9 +16,11 @@ x = np.random.rand(n, d).astype('float32')
 #x = normalizer.apply(x)
 
 qz = faiss.ProductQuantizer(d, M, nbits)
-print(f"PQ: d={d} M={M} nbits={nbits}")
+print(f"PQ: d={d} M={M} nbits={nbits} code_size={qz.code_size}")
 #qz = faiss.ResidualQuantizer(d, M, nbits)
 #print(f"RQ: d={d} M={M} nbits={nbits} code_size={qz.code_size}")
+#qz = faiss.LocalSearchQuantizer(d, M, nbits)
+#print(f"LSQ: d={d} M={M} nbits={nbits} code_size={qz.code_size}")
 
 qz.train(xt)
 
