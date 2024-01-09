@@ -83,3 +83,23 @@ PQのベクトル分割とコサイン距離空間との相性がわるいので
 
 *   <https://www.kaggle.com/code/mahmoudreda55/knn-precision-and-recall>
 *   [レコメンド指標の整理](https://zenn.dev/hellorusk/articles/7e336fd3c6be20a8f8d1)
+
+recall@10 で評価することにした。
+recall@10 とは、厳密なL2インデックスから厳密な候補を取得し、各Quantizedインデックスから取得した近似候補と比較し、
+正しい候補を何個返せたかを割合で示したもの。
+
+一様な乱数を使った場合、Quantizationはrecall@10の改善にほぼ寄与しない。
+一様なデータセット≒情報量が多いところでQuantization圧縮すると、
+データ全体の情報量が低下して不可逆変化が起こりrecall@10は悪化する。
+([data/recall.tsv](./data/recall.tsv) 参照)
+
+wordsはベクトルが少ないため情報量がもともと低く、圧縮しても情報量そのものは減らない。
+結果、よりアグレッシブに適切な圧縮をするインデックスのrecall@10が良くなった。
+Quantizedインデックスの性能の良いほうからの順序は以下の通り。
+
+1. LSQ
+2. RQ
+3. OPQ
+4. PQ
+
+([data/recall-words.tsv](./data/recall-words.tsv) 参照)
