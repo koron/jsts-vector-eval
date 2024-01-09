@@ -70,29 +70,34 @@ def testRecall(qname, d, M, nbits, norm, trainNum=10000, validNum=20000):
     # Measure the recall@k with validation vectors
     logger.debug(f"calculate recall@{k} on validation vectors")
     t1, h1 = measureRecall(truthIndex, targetIndex, k, validVecs)
-    w.writerow([qname, d, M, nbits, len(trainVecs), len(validVecs), k, f"{h1/t1:.5f}", f"{h0/t0:.5f}"])
+    w.writerow([qname, d, M, nbits, norm, len(trainVecs), len(validVecs), k, f"{h1/t1:.5f}", f"{h0/t0:.5f}"])
     out.flush()
 
-def testBatch(qname):
-    testRecall(qname,  8, 4, 8, False)
-    testRecall(qname, 16, 4, 8, False)
-    testRecall(qname, 32, 4, 8, False)
-    testRecall(qname, 64, 4, 8, False)
+def batchRecall(qname, norm):
+    testRecall(qname,  8, 4, 8, norm)
+    testRecall(qname, 16, 4, 8, norm)
+    testRecall(qname, 32, 4, 8, norm)
+    testRecall(qname, 64, 4, 8, norm)
 
 #   - Q-type:   quantizer name (PQ, RQ, LSQ)
 #   - d:        dimension number
 #   - M:        module number to split
 #   - nbits:    bits number to represent a module
+#   - norm:     normalize vectors
 #   - T-num:    training vector number
 #   - V-num:    validation vector number
 #   - k:        k-NN's k
 #   - recall:   recall@{k} for validation vectors
 #   - recall0:  recall@{k} for training vectors
-w.writerow(['Q-type', 'd', 'M', 'nbits', 'T-num', 'V-num', 'k', 'recall', 'recall0'])
+w.writerow(['Q-type', 'd', 'M', 'nbits', 'norm', 'T-num', 'V-num', 'k', 'recall', 'recall0'])
 out.flush()
 
-#testBatch('L2')
-testBatch('PQ')
-testBatch('OPQ')
-testBatch('RQ')
-testBatch('LSQ')
+def batchQuantizers(norm):
+    #batchRecall('L2')
+    batchRecall('PQ', norm)
+    batchRecall('OPQ', norm)
+    batchRecall('RQ', norm)
+    batchRecall('LSQ', norm)
+
+batchQuantizers(False)
+batchQuantizers(True)
