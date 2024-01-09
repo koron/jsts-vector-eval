@@ -36,3 +36,6 @@ def words2index(words, indexFactory):
         index.train(vecs)
     index.add_with_ids(vecs, ids)
     return index
+
+def words2vecs(words):
+    return np.array([w.vec for w in words], dtype=np.float32)
