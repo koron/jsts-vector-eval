@@ -78,3 +78,8 @@ PQのベクトル分割とコサイン距離空間との相性がわるいので
 結果は否で、次元を大きくしてもLSQやRQが有利になることはなかった。
 しかしその検証過程で、学習に利用した既知のベクトルに対する量子化誤差がLSQとRQにおいて小さいことを確認した。
 詳細は [./Qerror_d.ipynb](./Qerror_d.ipynb) を参照。
+
+### Recall, Accuracy, Precision の定義
+
+*   <https://www.kaggle.com/code/mahmoudreda55/knn-precision-and-recall>
+*   [レコメンド指標の整理](https://zenn.dev/hellorusk/articles/7e336fd3c6be20a8f8d1)
