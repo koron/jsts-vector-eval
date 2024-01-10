@@ -9,9 +9,7 @@ import sys
 from word import Word, load_words, words2vecs
 from report import printEntry
 
-logging.basicConfig(stream=sys.stderr)
-logger = logging.getLogger("RECALLWORDS")
-logger.setLevel(logging.INFO)
+from recall import generateIndex, measureRecall
 
 k = 10
 batch_size = 64
@@ -20,42 +18,9 @@ vecs = words2vecs(load_words(sys.stdin))
 out = sys.stdout
 w = csv.writer(sys.stdout, delimiter='\t')
 
-def measureRecall(truthIndex, targetIndex, k, vecs):
-    truthCount = 0 
-    hitCount = 0
-    for i in range(0, len(vecs), batch_size):
-        qvecs = vecs[i : min(i+batch_size, len(vecs))]
-        d0, truthIds = truthIndex.search(qvecs, k)
-        d1, targetIds = targetIndex.search(qvecs, k)
-        for j in range(0, len(truthIds)):
-            truthCount += len(truthIds[j])
-            hitCount += len(np.intersect1d(truthIds[j], targetIds[j]))
-    return truthCount, hitCount
-
-def generateIndex(qname, d, M, nbits, vecs):
-    match qname:
-        case 'L2':
-            coreIndex = faiss.IndexFlatL2(d)
-        case 'PQ':
-            coreIndex = faiss.IndexPQ(d, M, nbits)
-        case 'OPQ':
-            coreIndex = faiss.IndexPreTransform(faiss.OPQMatrix(d, M), faiss.IndexPQ(d, M, nbits))
-        case 'RQ':
-            coreIndex = faiss.IndexResidualQuantizer(d, M, nbits)
-        case 'LSQ':
-            coreIndex = faiss.IndexLocalSearchQuantizer(d, M, nbits)
-        case _:
-            raise Exception(f"unknown quantizer: {qname}")
-    index = faiss.IndexIDMap(coreIndex)
-    if not index.is_trained:
-        index.train(vecs)
-    index.add_with_ids(vecs, list(range(0, len(vecs))))
-    return index
-
 def testRecall(qname, M, nbits):
     d = vecs.shape[1]
     # Generate truthIndex
-    logger.debug("generate indexes")
     truthIndex = generateIndex('L2', d, 0, 0, vecs)
     targetIndex = generateIndex(qname, d, M, nbits, vecs)
 
@@ -65,11 +30,20 @@ def testRecall(qname, M, nbits):
     w.writerow([qname, d, M, nbits, k, f"{hitCnt/truthCnt:.5f}"])
     out.flush()
 
-w.writerow(['Q-type', 'd', 'M', 'nbits', 'k', 'recall0'])
-out.flush()
+if __name__ == '__main__':
+    #   - Q-type:   quantizer name (PQ, RQ, LSQ)
+    #   - d:        dimension number
+    #   - M:        module number to split
+    #   - nbits:    bits number to represent a module
+    #   - k:        k-NN's top k value
+    #   - recall0:  recall@{k} for training vectors
+    w.writerow(['Q-type', 'd', 'M', 'nbits', 'k', 'recall0'])
+    out.flush()
 
-testRecall('L2',  16, 8)
-testRecall('PQ',  16, 8)
-testRecall('OPQ', 16, 8)
-testRecall('RQ',  16, 8)
-testRecall('LSQ', 16, 8)
+    M = 16
+    nbits = 8
+    testRecall('L2',  M, nbits)
+    testRecall('PQ',  M, nbits)
+    #testRecall('OPQ', M, nbits)
+    testRecall('RQ',  M, nbits)
+    testRecall('LSQ', M, nbits)

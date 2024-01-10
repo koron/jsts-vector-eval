@@ -79,19 +79,6 @@ def batchRecall(qname, norm):
     testRecall(qname, 32, 4, 8, norm)
     testRecall(qname, 64, 4, 8, norm)
 
-#   - Q-type:   quantizer name (PQ, RQ, LSQ)
-#   - d:        dimension number
-#   - M:        module number to split
-#   - nbits:    bits number to represent a module
-#   - norm:     normalize vectors
-#   - T-num:    training vector number
-#   - V-num:    validation vector number
-#   - k:        k-NN's k
-#   - recall:   recall@{k} for validation vectors
-#   - recall0:  recall@{k} for training vectors
-w.writerow(['Q-type', 'd', 'M', 'nbits', 'norm', 'T-num', 'V-num', 'k', 'recall', 'recall0'])
-out.flush()
-
 def batchQuantizers(norm):
     #batchRecall('L2')
     batchRecall('PQ', norm)
@@ -99,5 +86,19 @@ def batchQuantizers(norm):
     batchRecall('RQ', norm)
     batchRecall('LSQ', norm)
 
-batchQuantizers(False)
-batchQuantizers(True)
+if __name__ == '__main__':
+    #   - Q-type:   quantizer name (PQ, RQ, LSQ)
+    #   - d:        dimension number
+    #   - M:        module number to split
+    #   - nbits:    bits number to represent a module
+    #   - norm:     normalize vectors
+    #   - T-num:    training vector number
+    #   - V-num:    validation vector number
+    #   - k:        k-NN's k
+    #   - recall:   recall@{k} for validation vectors
+    #   - recall0:  recall@{k} for training vectors
+    w.writerow(['Q-type', 'd', 'M', 'nbits', 'norm', 'T-num', 'V-num', 'k', 'recall', 'recall0'])
+    out.flush()
+
+    batchQuantizers(False)
+    batchQuantizers(True)
