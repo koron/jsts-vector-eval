@@ -87,3 +87,26 @@ PQ, RQにおいては recall@10 が極端に小さくなった一方で、LSQに
 
 現時点におけるベクトル量子化とk-NN及び近似最近傍探索は、
 用途や要件に応じて各種方式を適宜組み合わせてより良いものを選ぶ必要がある。
+
+## 参考資料
+
+* [faiss:The index factory](https://github.com/facebookresearch/faiss/wiki/The-index-factory)
+
+    今回、調査に利用したのは Encodings と Vector transforms の一部
+
+* [直積量子化を用いた近似最近傍探索 松井勇佑 国立情報学研究所 2016(PDF)](https://yusukematsui.me/project/survey_pq/doc/prmu2016.pdf)
+
+    Product Quantization の詳細な解説がされている
+
+* [ショートコードによる大規模近似最近傍探索 松井勇佑 国立情報学研究所 2016(PDF)](https://yusukematsui.me/project/survey_pq/doc/ann_lecture_20161202.pdf)
+
+    PQの発展形(OPQ, RQ, LSQ)への言及有り
+
+* [近似最近傍探索の最前線](https://speakerdeck.com/matsui_528/jin-si-zui-jin-bang-tan-suo-falsezui-qian-xian)
+
+    [158ページ: ANN手法選択フローチャート](https://speakerdeck.com/matsui_528/jin-si-zui-jin-bang-tan-suo-falsezui-qian-xian?slide=158)
+
+* [koron/techdocs: Product Quantization (PQ)を用いた際の精度・誤差についての検討](https://github.com/koron/techdocs/tree/main/product-quantization-errors)
+
+    Quantization としての量子化誤差の影響の検討プロジェクト。
+    Nearest Neighborで利用した際の影響も見ないと、となって本プロジェクトに繋がった。
