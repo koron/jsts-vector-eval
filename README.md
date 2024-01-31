@@ -40,7 +40,7 @@ k-NNにおけるTop 10の再現率は、前述の量子化誤差が大きくな�
 * L2 量子化無し。単なるL2ノルムによる距離計算
 * PQ (Production Quantization) ベクトルを `d / M` 次元ずつに分解しそれぞれを量子化する
 * OPQ PQの前に回転を施すもの
-* RQ (Residential Quantization) 1モジュールあたり nbits 個のベクトルから選択し、全モジュールのベクトルを足し合わせることで量子化とする。PQの一般化
+* RQ (Residential Quantization) 1モジュールあたり $`2^nbits`$ 個のベクトルから選択し、全モジュールのベクトルを足し合わせることで量子化とする。PQの一般化
 * LSQ (Local Search Quantization) RQの発展形
 
 掲載順は、より単純なものを先に提示した。
@@ -77,10 +77,10 @@ JSTSのデータは高圧縮条件を満たしており、LSQなどの高度な�
 ただし `nbits` を6に落とすとLSQ等においても recall@10 の低下がみられ、なんらかの限界があることがわかる。
 
 [recall-simulation.py](./pycmd/recall-simulation.py)を実行して、JSTSデータの規模感をシミュレーションし乱数により量子化方式における recall@10 を計算した。
-JSTSデータの偏りが及ぼす影響を検証するため。
+JSTSデータの偏りが及ぼした影響を検証するため。
 結果は [recall-simulation.tsv](./data/recall-simulation.tsv) 。
 入力データの特徴としては次元は768と大きいのに対し、学習に用いたベクトル数は2731と少ない。
-PQ, RQにおいては recall@10 が極端に小さくなった一方で、LSQにおいては高い recall@10 を維持している。
+PQ, RQにおいては recall@10 が極端に小さくなった一方で、LSQにおいては高い数値を維持している。
 ベクトル数が充分に少ないために、LSQが局所解(量子化用のベクトル)を上手く探索できたと推測される。
 
 ## 結論
