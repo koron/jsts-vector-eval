@@ -40,7 +40,7 @@ k-NNにおけるTop 10の再現率は、前述の量子化誤差が大きくな�
 * L2 量子化無し。単なるL2ノルムによる距離計算
 * PQ (Production Quantization) ベクトルを `d / M` 次元ずつに分解しそれぞれを量子化する
 * OPQ PQの前に回転を施すもの
-* RQ (Residential Quantization) 1モジュールあたり $`2^nbits`$ 個のベクトルから選択し、全モジュールのベクトルを足し合わせることで量子化とする。PQの一般化
+* RQ (Residential Quantization) 1モジュールあたり $`2^{nbits}`$ 個のベクトルから選択し、全モジュールのベクトルを足し合わせることで量子化とする。PQの一般化
 * LSQ (Local Search Quantization) RQの発展形
 
 掲載順は、より単純なものを先に提示した。
